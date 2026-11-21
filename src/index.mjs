@@ -1,4 +1,4 @@
-// Server-rendered page listing the 10 cheapest diesel (Gasóleo A) stations
+﻿// Server-rendered page listing the 10 cheapest diesel (GasÃ³leo A) stations
 // in Vitoria and San Sebastian.
 // Data: Spanish Ministry for Ecological Transition (MITECO) open REST API,
 // refreshed by the ministry every 30 minutes.
@@ -11,7 +11,7 @@ const API =
 
 const CITIES = [
   { id: '46', slug: 'vitoria', name: 'Vitoria' },
-  { id: '3157', slug: 'donostia', name: 'San Sebastián' },
+  { id: '3157', slug: 'donostia', name: 'San SebastiÃ¡n' },
 ]
 
 const TOP_N = 10
@@ -34,8 +34,8 @@ async function fetchCity(city) {
   const stations = (json.ListaEESSPrecio ?? [])
     .map((s) => ({
       price: num(s['Precio Gasoleo A']),
-      brand: (s['Rótulo'] || 'Gasolinera').trim(),
-      address: (s['Dirección'] || '').trim(),
+      brand: (s['RÃ³tulo'] || 'Gasolinera').trim(),
+      address: (s['DirecciÃ³n'] || '').trim(),
       cp: s['C.P.'] || '',
       hours: s['Horario'] || '',
       lat: coord(s['Latitud']),
@@ -76,7 +76,7 @@ function cityCard(c, winner) {
   const cheapest = c.top[0]?.price
   const rows = c.top
     .map((s, i) => {
-      const diff = i === 0 ? '' : `<span class="diff">+${((s.price - cheapest) * 100).toFixed(1).replace('.', ',')}¢</span>`
+      const diff = i === 0 ? '' : `<span class="diff">+${((s.price - cheapest) * 100).toFixed(1).replace('.', ',')}Â¢</span>`
       const maps = Number.isFinite(s.lat) && Number.isFinite(s.lon)
         ? `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`
         : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${s.address} ${s.cp} ${c.name}`)}`
@@ -88,13 +88,13 @@ function cityCard(c, winner) {
     <span class="addr">${esc(title(s.address))}</span>
     <span class="hours">${esc(s.hours)}</span>
   </a>
-  <span class="price"><b>${fmt(s.price)}</b><small>€/L</small>${diff}</span>
+  <span class="price"><b>${fmt(s.price)}</b><small>â‚¬/L</small>${diff}</span>
 </li>`
     })
     .join('')
   return `<section class="city" id="${c.slug}">
-  <header><h2>${esc(c.name)}</h2><p>${c.total} gasolineras · más barata ${cheapest ? fmt(cheapest) + ' €/L' : '—'}</p></header>
-  <ol>${rows || '<li class="empty">No hay precios de diésel disponibles ahora mismo.</li>'}</ol>
+  <header><h2>${esc(c.name)}</h2><p>${c.total} gasolineras Â· mÃ¡s barata ${cheapest ? fmt(cheapest) + ' â‚¬/L' : 'â€”'}</p></header>
+  <ol>${rows || '<li class="empty">No hay precios de diÃ©sel disponibles ahora mismo.</li>'}</ol>
 </section>`
 }
 
@@ -103,15 +103,15 @@ function page(data, error, stale) {
   // Cheapest first-place price across all cities: that city's top station is shown in green.
   const minPrice = data ? Math.min(...data.map((c) => c.top[0]?.price ?? Infinity)) : Infinity
   const body = error
-    ? `<p class="error">No se ha podido conectar con el servicio oficial de precios. Vuelve a cargar la página en unos instantes.</p>`
+    ? `<p class="error">No se ha podido conectar con el servicio oficial de precios. Vuelve a cargar la pÃ¡gina en unos instantes.</p>`
     : data.map((c) => cityCard(c, c.top[0]?.price === minPrice)).join('')
   return `<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Diésel más barato · Vitoria y San Sebastián</title>
-<meta name="description" content="Los 10 precios más baratos de diésel (Gasóleo A) ahora mismo en Vitoria y San Sebastián, con datos oficiales del Ministerio.">
+<title>DiÃ©sel mÃ¡s barato Â· Vitoria y San SebastiÃ¡n</title>
+<meta name="description" content="Los 10 precios mÃ¡s baratos de diÃ©sel (GasÃ³leo A) ahora mismo en Vitoria y San SebastiÃ¡n, con datos oficiales del Ministerio.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#111111">
 <style>
@@ -173,17 +173,17 @@ footer a{color:var(--mut)}
 <body>
 <div class="wrap">
   <div class="top">
-    <p class="meta">Gasóleo A · las ${TOP_N} más baratas por ciudad<br>${updated ? `Precios oficiales a <b>${esc(updated)}</b>` : ''}</p>
+    <p class="meta">GasÃ³leo A Â· las ${TOP_N} mÃ¡s baratas por ciudad<br>${updated ? `Precios oficiales a <b>${esc(updated)}</b>` : ''}</p>
   </div>
-  ${stale ? `<p class="warn">No se han podido obtener los precios en directo del Ministerio. Estos son los más recientes que tenemos (a ${esc(updated)}). Recarga la página para volver a intentarlo.</p>` : ''}
+  ${stale ? `<p class="warn">No se han podido obtener los precios en directo del Ministerio. Estos son los mÃ¡s recientes que tenemos (a ${esc(updated)}). Recarga la pÃ¡gina para volver a intentarlo.</p>` : ''}
   <main class="grid">${body}</main>
-  <footer>Fuente: <a href="https://geoportalgasolineras.es/" rel="noopener">Ministerio para la Transición Ecológica</a> — los precios se actualizan cada 30 minutos. Pulsa sobre una gasolinera para abrirla en Maps.</footer>
+  <footer>Fuente: <a href="https://geoportalgasolineras.es/" rel="noopener">Ministerio para la TransiciÃ³n EcolÃ³gica</a> â€” los precios se actualizan cada 30 minutos. Pulsa sobre una gasolinera para abrirla en Maps.</footer>
 </div>
 </body>
 </html>`
 }
 
-export default async function handler(request) {
+async function handler(request) {
   const url = new URL(request.url)
   if (url.pathname !== '/') {
     return new Response('No encontrado', { status: 404, headers: { 'Content-Type': 'text/plain' } })
@@ -195,7 +195,6 @@ export default async function handler(request) {
         'Content-Type': 'text/html; charset=utf-8',
         // Live prices on every load: never cache at the CDN or in the browser.
         'Cache-Control': 'no-store',
-        'Netlify-CDN-Cache-Control': 'no-store',
       },
     })
   } catch (err) {
@@ -206,3 +205,5 @@ export default async function handler(request) {
     })
   }
 }
+
+export default { fetch: (request) => handler(request) }

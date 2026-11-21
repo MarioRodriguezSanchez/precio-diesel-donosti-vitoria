@@ -1,0 +1,7 @@
+name = "precio-diesel-donosti-vitoria"
+main = "src/index.mjs"
+compatibility_date = "2025-01-01"
+
+# Los ficheros de public/ (favicon) se sirven como estáticos; el resto lo gestiona el Worker.
+[assets]
+directory = "./public"
