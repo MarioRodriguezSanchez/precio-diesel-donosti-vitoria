@@ -1,0 +1,6 @@
+{
+  "name": "diesel-prices-vitoria-san",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24" }
+}
