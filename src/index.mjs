@@ -183,7 +183,7 @@ footer a{color:var(--mut)}
 </html>`
 }
 
-export default async function handler(request) {
+async function handler(request) {
   const url = new URL(request.url)
   if (url.pathname !== '/') {
     return new Response('No encontrado', { status: 404, headers: { 'Content-Type': 'text/plain' } })
@@ -195,7 +195,6 @@ export default async function handler(request) {
         'Content-Type': 'text/html; charset=utf-8',
         // Live prices on every load: never cache at the CDN or in the browser.
         'Cache-Control': 'no-store',
-        'Netlify-CDN-Cache-Control': 'no-store',
       },
     })
   } catch (err) {
@@ -206,3 +205,5 @@ export default async function handler(request) {
     })
   }
 }
+
+export default { fetch: (request) => handler(request) }
