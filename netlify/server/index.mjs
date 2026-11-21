@@ -171,7 +171,7 @@ footer a{color:var(--mut)}
   </div>
   ${stale ? `<p class="warn">No se han podido obtener los precios en directo del Ministerio. Estos son los más recientes que tenemos (a ${esc(updated)}). Recarga la página para volver a intentarlo.</p>` : ''}
   <main class="grid">${body}</main>
-  <footer>Fuente: <a href="https://geoportalgasolineras.es/" rel="noopener">Ministerio para la Transición Ecológica</a> — los precios se actualizan cada 30 minutos. Pulsa sobre una gasolinera para abrirla en Maps.</footer>
+  <footer>Fuente: <a href="https://geoportalgasolineras.es/" rel="noopener">Ministerio para la Transición Ecológica</a> — los precios se actualizan cada 30 minutos. Pulsa sobre una gasolinera para abrirla en Maps. Prueba de despliegue.</footer>
 </div>
 </body>
 </html>`
