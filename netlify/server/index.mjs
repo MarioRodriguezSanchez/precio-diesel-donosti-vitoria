@@ -72,7 +72,7 @@ const title = (s) => s.toLowerCase().replace(/(^|[\s\-/(])(\p{L})/gu, (m, p, l) 
 
 const fmt = (n) => n.toFixed(3).replace('.', ',')
 
-function cityCard(c) {
+function cityCard(c, winner) {
   const cheapest = c.top[0]?.price
   const rows = c.top
     .map((s, i) => {
@@ -80,7 +80,8 @@ function cityCard(c) {
       const maps = Number.isFinite(s.lat) && Number.isFinite(s.lon)
         ? `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`
         : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${s.address} ${s.cp} ${c.name}`)}`
-      return `<li${i === 0 ? ' class="best"' : ''}>
+      const cls = i === 0 ? (winner ? 'best win' : 'best') : ''
+      return `<li${cls ? ` class="${cls}"` : ''}>
   <span class="rank">${i + 1}</span>
   <a class="info" href="${esc(maps)}" target="_blank" rel="noopener">
     <strong>${esc(s.brand)}</strong>
@@ -99,9 +100,11 @@ function cityCard(c) {
 
 function page(data, error, stale) {
   const updated = data?.[0]?.updated
+  // Cheapest first-place price across all cities: that city's top station is shown in green.
+  const minPrice = data ? Math.min(...data.map((c) => c.top[0]?.price ?? Infinity)) : Infinity
   const body = error
     ? `<p class="error">No se ha podido conectar con el servicio oficial de precios. Vuelve a cargar la página en unos instantes.</p>`
-    : data.map(cityCard).join('')
+    : data.map((c) => cityCard(c, c.top[0]?.price === minPrice)).join('')
   return `<!doctype html>
 <html lang="es">
 <head>
@@ -128,8 +131,10 @@ ol{list-style:none}
 li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line)}
 li:last-child{border-bottom:0}
 li.best{background:linear-gradient(90deg,rgba(245,197,24,.12),transparent)}
+li.win{background:linear-gradient(90deg,rgba(95,211,141,.14),transparent)}
 .rank{font-weight:800;color:var(--mut);font-variant-numeric:tabular-nums;text-align:center}
 .best .rank{color:var(--y)}
+.win .rank{color:var(--g)}
 .info{display:flex;flex-direction:column;min-width:0;color:inherit;text-decoration:none}
 .info:hover strong{text-decoration:underline}
 .info strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -137,6 +142,7 @@ li.best{background:linear-gradient(90deg,rgba(245,197,24,.12),transparent)}
 .price{display:flex;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums}
 .price b{font-size:20px;font-weight:800;letter-spacing:-.01em}
 .best .price b{color:var(--y)}
+.win .price b{color:var(--g)}
 .price small{color:var(--mut);font-size:11px}
 .diff{color:var(--mut);font-size:11px}
 .warn{border:1px solid var(--y);color:var(--ink);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:13px}
